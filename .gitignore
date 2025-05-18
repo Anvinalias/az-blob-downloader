@@ -1,0 +1,8 @@
+# Ignore binaries
+*.exe
+
+# Logs
+*.log
+
+# Ignore config
+config.yaml
