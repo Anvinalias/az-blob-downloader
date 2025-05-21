@@ -1,0 +1,4 @@
+# Encrypted storage connection string and passphrase
+storage:
+  connectionStringEncrypted: ""  # Add your base64-encoded encrypted string here
+  passphrase: ""                 # Add the passphrase used for encryption here
