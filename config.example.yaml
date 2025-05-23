@@ -3,3 +3,8 @@ storage:
   connectionStringEncrypted: ""  # Add your base64-encoded encrypted string here
   passphrase: ""                 # Add the passphrase used for encryption here
   blobName: ""
+
+# Local paths
+paths:
+  downloadPath: ""               # Preferred download location
+  logPath: ""                    # Preferred log location
