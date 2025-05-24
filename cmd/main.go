@@ -4,6 +4,7 @@ import (
 	"log"
 
 	"github.com/Anvinalias/az-blob-downloader/config"
+	"github.com/Anvinalias/az-blob-downloader/internal/decrypt"
 )
 
 func main() {
@@ -17,6 +18,13 @@ func run() error {
 	if err != nil {
 		return err
 	}
+
+	// Decrypt the encrypted connection string
+	connStr, err := decrypt.DecryptAESGCM(cfg.Storage.ConnectionStringEncrypted, cfg.Storage.Passphrase)
+	if err != nil {
+		return err
+	}
+
 	log.Printf("Blobname: %s", cfg.Storage.BlobName)
 	log.Printf("Download path: %s", cfg.Paths.DownloadPath)
 	log.Printf("Log path: %s", cfg.Paths.LogPath)
