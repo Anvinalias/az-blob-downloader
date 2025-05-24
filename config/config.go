@@ -48,8 +48,27 @@ func LoadConfig(filePath string) (*Config, error) {
 		return nil, errors.New("storage.blobName is required in config.yaml")
 	}
 
+	// downloadPath is required
+	if cfg.Paths.DownloadPath == "" {
+		return nil, errors.New("downloadPath is required in config.yaml")
+	}
+	if err := ensureDir(cfg.Paths.DownloadPath); err != nil {
+		return nil, err
+	}
+
 	// Always use default log path
 	cfg.Paths.LogPath = filepath.Join(".", "logs")
+	if err := ensureDir(cfg.Paths.LogPath); err != nil {
+		return nil, err
+	}
 
 	return &cfg, nil
+}
+
+// makes sure the directory exists
+func ensureDir(path string) error {
+	if err := os.MkdirAll(path, os.ModePerm); err != nil {
+		return err
+	}
+	return nil
 }
