@@ -5,6 +5,7 @@ import (
 
 	"github.com/Anvinalias/az-blob-downloader/config"
 	"github.com/Anvinalias/az-blob-downloader/internal/decrypt"
+	"github.com/Anvinalias/az-blob-downloader/internal/storage"
 )
 
 func main() {
@@ -25,9 +26,11 @@ func run() error {
 		return err
 	}
 
-	log.Printf("Blobname: %s", cfg.Storage.BlobName)
-	log.Printf("Download path: %s", cfg.Paths.DownloadPath)
-	log.Printf("Log path: %s", cfg.Paths.LogPath)
+	client, err := storage.NewClient(connStr)
+	if err != nil {
+		log.Fatalf("failed to create client: %v", err)
+	}
+	log.Println("Azure Blob client created successfully")
 
 	return nil
 }
