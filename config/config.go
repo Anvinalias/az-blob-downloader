@@ -1,6 +1,7 @@
 package config
 
 import (
+	"errors"
 	"os"
 	"path/filepath"
 
@@ -34,6 +35,17 @@ func LoadConfig(filePath string) (*Config, error) {
 	var cfg Config
 	if err := yaml.Unmarshal(data, &cfg); err != nil {
 		return nil, err
+	}
+
+	// Validate storage config fields
+	if cfg.Storage.ConnectionStringEncrypted == "" {
+		return nil, errors.New("storage.connectionStringEncrypted is required in config.yaml")
+	}
+	if cfg.Storage.Passphrase == "" {
+		return nil, errors.New("storage.passphrase is required in config.yaml")
+	}
+	if cfg.Storage.BlobName == "" {
+		return nil, errors.New("storage.blobName is required in config.yaml")
 	}
 
 	// Always use default log path
