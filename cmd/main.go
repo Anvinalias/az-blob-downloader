@@ -32,5 +32,10 @@ func run() error {
 	}
 	log.Println("Azure Blob client created successfully")
 
+	err = storage.DownloadMatchingBlobs(client, cfg.Storage.BlobName, "lpsqpalapp-1.0.0.0-4.0.0.0", cfg.Paths.DownloadPath)
+	if err != nil {
+		log.Fatalf("Download failed: %v", err)
+	}
+
 	return nil
 }
