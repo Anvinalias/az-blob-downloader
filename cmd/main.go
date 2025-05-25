@@ -37,5 +37,14 @@ func run() error {
 		log.Fatalf("Download failed: %v", err)
 	}
 
+	// test
+	matches, err := storage.ListMatchingBlobs(client, cfg.Storage.BlobName, "maintenancepalapp")
+	if err != nil {
+		log.Fatal(err)
+	}
+	for _, m := range matches {
+		log.Println("Matched:", m)
+	}
+
 	return nil
 }

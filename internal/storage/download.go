@@ -13,6 +13,7 @@ import (
 )
 
 // DownloadMatchingBlobs downloads all blobs from the specified container whose names contain the given pattern.
+// Temporary test function
 func DownloadMatchingBlobs(client *azblob.Client, containerName, pattern, downloadDir string) error {
 	ctx := context.Background()
 	pager := client.NewListBlobsFlatPager(containerName, nil)
