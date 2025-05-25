@@ -1,9 +1,9 @@
 # Encrypted storage connection string and passphrase
 storage:
-  connectionStringEncrypted: ""  # Add your base64-encoded encrypted string here
-  passphrase: ""                 # Add the passphrase used for encryption here
-  blobName: ""
+  connectionStringEncrypted: ""  # Encrypted Azure Storage connection string (base64)
+  passphrase: ""                 # Passphrase to decrypt the connection string (or use environment variable)
+  blobName: ""                   # Name of the Azure Blob container to access
 
 # Local paths
 paths:
-  downloadPath: ""               # Preferred download location
+  downloadPath: ""               # Folder where downloaded files will be saved
