@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 
-	"github.com/Anvinalias/az-blob-downloader/config"
+	"github.com/Anvinalias/az-blob-downloader/internal/config"
 	"github.com/Anvinalias/az-blob-downloader/internal/decrypt"
 	"github.com/Anvinalias/az-blob-downloader/internal/storage"
 )
