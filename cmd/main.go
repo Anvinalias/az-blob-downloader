@@ -32,18 +32,18 @@ func run() error {
 	}
 	log.Println("Azure Blob client created successfully")
 
-	err = storage.DownloadMatchingBlobs(client, cfg.Storage.BlobName, "lpsqpalapp-1.0.0.0-4.0.0.0", cfg.Paths.DownloadPath)
-	if err != nil {
-		log.Fatalf("Download failed: %v", err)
-	}
+	// err = storage.DownloadMatchingBlobs(client, cfg.Storage.BlobName, "lpsqpalapp-1.0.0.0-4.0.0.0", cfg.Paths.DownloadPath)
+	// if err != nil {
+	// 	log.Fatalf("Download failed: %v", err)
+	// }
 
 	// test
-	matches, err := storage.ListMatchingBlobs(client, cfg.Storage.BlobName, "maintenancepalapp")
+	blobs, err := storage.ListMatchingBlobs(client, cfg.Storage.BlobName, "maintenancepalapp")
 	if err != nil {
 		log.Fatal(err)
 	}
-	for _, m := range matches {
-		log.Println("Matched:", m)
+	for _, blob := range blobs {
+		log.Println("Matched:", blob)
 	}
 
 	return nil
