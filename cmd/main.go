@@ -5,6 +5,7 @@ import (
 
 	"github.com/Anvinalias/az-blob-downloader/internal/config"
 	"github.com/Anvinalias/az-blob-downloader/internal/decrypt"
+	"github.com/Anvinalias/az-blob-downloader/internal/request"
 	"github.com/Anvinalias/az-blob-downloader/internal/storage"
 )
 
@@ -37,13 +38,22 @@ func run() error {
 	// 	log.Fatalf("Download failed: %v", err)
 	// }
 
-	// test
-	blobs, err := storage.ListMatchingBlobs(client, cfg.Storage.BlobName, "maintenancepalapp")
+	requests, err := request.ReadRequests("request.txt")
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("Failed to read requests: %v", err)
 	}
-	for _, blob := range blobs {
-		log.Println("Matched:", blob)
+
+	for _, req := range requests {
+		log.Printf("Prefix: %s, From: %s, To: %s\n", req.Prefix, req.From, req.To)
+
+		// test
+		blobs, err := storage.ListMatchingBlobs(client, cfg.Storage.BlobName, req.Prefix)
+		if err != nil {
+			log.Fatal(err)
+		}
+		for _, blob := range blobs {
+			log.Println("Matched:", blob)
+		}
 	}
 
 	return nil
