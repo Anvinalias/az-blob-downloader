@@ -6,3 +6,6 @@
 
 # Ignore config
 config.yaml
+
+# Ignore request file
+request.txt
