@@ -1,0 +1,4 @@
+--sample request format--
+application-name1-v1-v2
+application-name2-v1-v12
+application-name3-v3-v8
