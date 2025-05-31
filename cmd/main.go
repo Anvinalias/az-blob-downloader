@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"strings"
 
 	"github.com/Anvinalias/az-blob-downloader/internal/config"
 	"github.com/Anvinalias/az-blob-downloader/internal/decrypt"
@@ -42,19 +43,23 @@ func run() error {
 	if err != nil {
 		log.Fatalf("Failed to read requests: %v", err)
 	}
-
 	for _, req := range requests {
-		log.Printf("Prefix: %s, From: %s, To: %s\n", req.Prefix, req.From, req.To)
-
-		// test
 		blobs, err := storage.ListMatchingBlobs(client, cfg.Storage.BlobName, req.Prefix)
 		if err != nil {
-			log.Fatal(err)
+			log.Printf("Failed to list blobs for prefix %s: %v", req.Prefix, err)
+			continue
 		}
-		for _, blob := range blobs {
-			log.Println("Matched:", blob)
+		// To print the path steps:
+		baseNames, err := storage.BuildShortestUpgradePath(blobs, req)
+		if err != nil {
+			log.Printf("%v", err)
+			continue
+		}
+		if len(baseNames) == 1 {
+			log.Printf("Shortest path for %s: [%s]", req.Raw, baseNames[0])
+		} else {
+			log.Printf("Shortest path for %s: %s", req.Raw, strings.Join(baseNames, " -> "))
 		}
 	}
-
 	return nil
 }
