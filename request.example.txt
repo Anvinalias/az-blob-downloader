@@ -1,4 +1,8 @@
 --sample request format--
-application-name1-v1-v2
-application-name2-v1-v12
-application-name3-v3-v8
+application1-version1-version12
+application2-version1-version12
+application3-version3-version18
+.
+.
+.
+applicationX-versionY-versionZ
