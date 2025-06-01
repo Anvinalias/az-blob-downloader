@@ -7,8 +7,8 @@ import (
 	"github.com/Azure/azure-sdk-for-go/sdk/storage/azblob"
 )
 
-// ListMatchingBlobs lists blob names in a container that contain the specified pattern.
-func ListMatchingBlobs(client *azblob.Client, containerName string, prefix string) ([]string, error) {
+// ListBlobsWithPrefix lists blob names in a container that contain the specified pattern.
+func ListBlobsWithPrefix(client *azblob.Client, containerName string, prefix string) ([]string, error) {
 	ctx := context.Background()
 	pager := client.NewListBlobsFlatPager(containerName, &azblob.ListBlobsFlatOptions{
 		Prefix: &prefix,

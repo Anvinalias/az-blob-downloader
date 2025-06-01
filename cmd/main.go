@@ -39,7 +39,7 @@ func run() error {
 		log.Fatalf("Failed to read requests: %v", err)
 	}
 	for _, req := range requests {
-		blobs, err := storage.ListMatchingBlobs(client, cfg.Storage.BlobName, req.Prefix)
+		blobs, err := storage.ListBlobsWithPrefix(client, cfg.Storage.BlobName, req.Prefix)
 		if err != nil {
 			log.Printf("Failed to list blobs for prefix %s: %v", req.Prefix, err)
 			continue
