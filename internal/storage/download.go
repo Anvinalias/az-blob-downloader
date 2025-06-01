@@ -15,12 +15,16 @@ import (
 // DownloadFilteredBlobs downloads all blobs whose names start with any baseName.
 // Each upgrade step may have multiple related blobs with different extensions or suffixes.
 // (e.g., .zip, .z01, .z02) or suffixes (e.g., -release.txt).
-func DownloadFilteredBlobs(client *azblob.Client, containerName string, allBlobs []string, baseNames []string, downloadDir string) error {
-	for _, base := range baseNames {
+func DownloadFilteredBlobs(client *azblob.Client, containerName string, allBlobs []string, baseNames []string, downloadPath string) error {
+	for i, base := range baseNames {
+		stepDir := filepath.Join(downloadPath, containerName, fmt.Sprintf("step%d", i+1))
+		if err := os.MkdirAll(stepDir, 0755); err != nil {
+			return fmt.Errorf("failed to create directory %s: %w", stepDir, err)
+		}
 		for _, blob := range allBlobs {
 			if strings.HasPrefix(blob, base) {
 				log.Printf("Downloading: %s", blob)
-				if err := downloadBlob(client, containerName, blob, downloadDir); err != nil {
+				if err := downloadBlob(client, containerName, blob, stepDir); err != nil {
 					return fmt.Errorf("failed to download %s: %w", blob, err)
 				}
 			}
