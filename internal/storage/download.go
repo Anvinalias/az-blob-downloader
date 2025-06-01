@@ -12,10 +12,10 @@ import (
 	"github.com/Azure/azure-sdk-for-go/sdk/storage/azblob"
 )
 
-// DownloadFilteredBlobs downloads all blobs whose names start with any baseName.
-// Each upgrade step may have multiple related blobs with different extensions or suffixes.
-// (e.g., .zip, .z01, .z02) or suffixes (e.g., -release.txt).
-func DownloadFilteredBlobs(client *azblob.Client, containerName string, allBlobs []string, baseNames []string, downloadPath string) error {
+// DownloadBlobsByStep downloads all blobs whose names start with any baseName.
+// Each upgrade step may have multiple related blobs with different extensions (e.g., .zip, .z01, .z02) 
+// or suffixes (e.g., -release.txt).
+func DownloadBlobsByStep(client *azblob.Client, containerName string, allBlobs []string, baseNames []string, downloadPath string) error {
 	for i, base := range baseNames {
 		stepDir := filepath.Join(downloadPath, containerName, fmt.Sprintf("step%d", i+1))
 		if err := os.MkdirAll(stepDir, 0755); err != nil {

@@ -55,8 +55,7 @@ func run() error {
 		} else {
 			log.Printf("Shortest path for %s: [%s]", req.Raw, strings.Join(baseNames, " -> "))
 		}
-		// Download files in a single path
-		err = storage.DownloadFilteredBlobs(client, cfg.Storage.BlobName, blobs, baseNames, cfg.Paths.DownloadPath)
+		err = storage.DownloadBlobsByStep(client, cfg.Storage.BlobName, blobs, baseNames, cfg.Paths.DownloadPath)
 		if err != nil {
 			log.Fatalf("Download failed: %v", err)
 		}
