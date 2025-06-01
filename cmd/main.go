@@ -56,11 +56,9 @@ func run() error {
 			log.Printf("Shortest path for %s: [%s]", req.Raw, strings.Join(baseNames, " -> "))
 		}
 		// Download files in a single path
-		for _, name := range baseNames {
-			err = storage.DownloadMatchingBlobs(client, cfg.Storage.BlobName, name, cfg.Paths.DownloadPath)
-			if err != nil {
-				log.Fatalf("Download failed: %v", err)
-			}
+		err = storage.DownloadFilteredBlobs(client, cfg.Storage.BlobName, blobs, baseNames, cfg.Paths.DownloadPath)
+		if err != nil {
+			log.Fatalf("Download failed: %v", err)
 		}
 	}
 	return nil

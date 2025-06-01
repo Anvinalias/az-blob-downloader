@@ -12,34 +12,26 @@ import (
 	"github.com/Azure/azure-sdk-for-go/sdk/storage/azblob"
 )
 
-// DownloadMatchingBlobs downloads all blobs from the specified container whose names contain the given pattern.
-// Temporary test function
-func DownloadMatchingBlobs(client *azblob.Client, containerName, pattern, downloadDir string) error {
-	ctx := context.Background()
-	pager := client.NewListBlobsFlatPager(containerName, nil)
-
-	for pager.More() {
-		page, err := pager.NextPage(ctx)
-		if err != nil {
-			return fmt.Errorf("failed to list blobs: %w", err)
-		}
-
-		for _, blob := range page.Segment.BlobItems {
-			if strings.Contains(*blob.Name, pattern) {
-				log.Printf("Downloading blob: %s", *blob.Name)
-				err := downloadBlob(ctx, client, containerName, *blob.Name, downloadDir)
-				if err != nil {
-					return fmt.Errorf("failed to download blob %s: %w", *blob.Name, err)
+// DownloadFilteredBlobs downloads all blobs whose names start with any baseName.
+// Each upgrade step may have multiple related blobs with different extensions or suffixes.
+// (e.g., .zip, .z01, .z02) or suffixes (e.g., -release.txt).
+func DownloadFilteredBlobs(client *azblob.Client, containerName string, allBlobs []string, baseNames []string, downloadDir string) error {
+	for _, base := range baseNames {
+		for _, blob := range allBlobs {
+			if strings.HasPrefix(blob, base) {
+				log.Printf("Downloading: %s", blob)
+				if err := downloadBlob(client, containerName, blob, downloadDir); err != nil {
+					return fmt.Errorf("failed to download %s: %w", blob, err)
 				}
 			}
 		}
 	}
-
 	return nil
 }
 
-func downloadBlob(ctx context.Context, client *azblob.Client, containerName, blobName, downloadDir string) error {
-	resp, err := client.DownloadStream(ctx, containerName, blobName, nil)
+// downloadBlob downloads a single blob and saves it locally.
+func downloadBlob(client *azblob.Client, containerName, blobName, downloadDir string) error {
+	resp, err := client.DownloadStream(context.Background(), containerName, blobName, nil)
 	if err != nil {
 		return err
 	}
