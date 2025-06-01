@@ -34,11 +34,6 @@ func run() error {
 	}
 	log.Println("Azure Blob client created successfully")
 
-	// err = storage.DownloadMatchingBlobs(client, cfg.Storage.BlobName, "lpsqpalapp-1.0.0.0-4.0.0.0", cfg.Paths.DownloadPath)
-	// if err != nil {
-	// 	log.Fatalf("Download failed: %v", err)
-	// }
-
 	requests, err := request.ReadRequests("request.txt")
 	if err != nil {
 		log.Fatalf("Failed to read requests: %v", err)
@@ -58,7 +53,14 @@ func run() error {
 		if len(baseNames) == 1 {
 			log.Printf("Shortest path for %s: [%s]", req.Raw, baseNames[0])
 		} else {
-			log.Printf("Shortest path for %s: %s", req.Raw, strings.Join(baseNames, " -> "))
+			log.Printf("Shortest path for %s: [%s]", req.Raw, strings.Join(baseNames, " -> "))
+		}
+		// Download files in a single path
+		for _, name := range baseNames {
+			err = storage.DownloadMatchingBlobs(client, cfg.Storage.BlobName, name, cfg.Paths.DownloadPath)
+			if err != nil {
+				log.Fatalf("Download failed: %v", err)
+			}
 		}
 	}
 	return nil
