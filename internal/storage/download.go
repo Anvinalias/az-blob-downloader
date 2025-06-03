@@ -29,6 +29,10 @@ func DownloadBlobsByStep(client *azblob.Client, containerName string, allBlobs [
 				}
 			}
 		}
+		// Generate uploadedversion.txt for this step
+		if err := GenerateUploadedVersion(stepDir); err != nil {
+			log.Printf("Failed to generate uploadedversion.txt for %s: %v", stepDir, err)
+		}
 	}
 	return nil
 }
