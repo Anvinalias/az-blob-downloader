@@ -65,6 +65,11 @@ func GenerateUploadedVersion(stepDir string) error {
 	if err := os.WriteFile(jsonPath, data, fs.FileMode(0644)); err != nil {
 		return fmt.Errorf("failed to write uploadedversion.txt: %w", err)
 	}
-	fmt.Printf("Updated uploadedversion.txt")
+	var appNames []string
+	for _, info := range result {
+		appNames = append(appNames, info.AppName)
+	}
+	fmt.Printf("uploadedversion.txt updated with applications: %s\n", strings.Join(appNames, ", "))
+
 	return nil
 }
