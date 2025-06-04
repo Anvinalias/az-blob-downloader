@@ -8,19 +8,27 @@ import (
 	"github.com/Anvinalias/az-blob-downloader/internal/decrypt"
 	"github.com/Anvinalias/az-blob-downloader/internal/request"
 	"github.com/Anvinalias/az-blob-downloader/internal/storage"
+	"github.com/Anvinalias/az-blob-downloader/internal/logging"
+
 )
 
 func main() {
-	if err := run(); err != nil {
+    cfg, err := config.LoadConfig("config.yaml")
+    if err != nil {
+        log.Fatalf("Failed to load config: %v", err)
+    }
+    logFile, err := logging.Setup(cfg.Paths.LogPath)
+    if err != nil {
+        log.Fatalf("Failed to set up logging: %v", err)
+    }
+    defer logFile.Close()
+
+	if err := run(cfg); err != nil {
 		log.Fatalf("Error: %v", err)
 	}
 }
 
-func run() error {
-	cfg, err := config.LoadConfig("config.yaml")
-	if err != nil {
-		return err
-	}
+func run(cfg *config.Config) error {
 
 	// Decrypt the encrypted connection string
 	connStr, err := decrypt.DecryptAESGCM(cfg.Storage.ConnectionStringEncrypted, cfg.Storage.Passphrase)
