@@ -7,8 +7,7 @@ How to Set Up
   a. Prepare the Config File
     - Rename config.example.yaml to config.yaml
     - Open config.yaml in a text editor
-    - Update these keys only:
-        blobName: Set this to the name of the container you want the offline file from
+    - Update this key only:
         downloadPath: Set this to the folder where you want the offline file downloaded
 	  Note:
 	  Use double backslashes (\\) in your path, or a single forward slash (/).
