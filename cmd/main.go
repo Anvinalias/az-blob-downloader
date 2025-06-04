@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"strings"
+	"fmt"
 
 	"github.com/Anvinalias/az-blob-downloader/internal/config"
 	"github.com/Anvinalias/az-blob-downloader/internal/decrypt"
@@ -15,16 +16,16 @@ import (
 func main() {
     cfg, err := config.LoadConfig("config.yaml")
     if err != nil {
-        log.Fatalf("Failed to load config: %v", err)
+        log.Fatalf("ERROR: Failed to load config: %v", err)
     }
     logFile, err := logging.Setup(cfg.Paths.LogPath)
     if err != nil {
-        log.Fatalf("Failed to set up logging: %v", err)
+        log.Fatalf("ERROR: Failed to set up logging: %v", err)
     }
     defer logFile.Close()
 
 	if err := run(cfg); err != nil {
-		log.Fatalf("Error: %v", err)
+		log.Fatalf("ERROR: %v", err)
 	}
 }
 
@@ -33,29 +34,29 @@ func run(cfg *config.Config) error {
 	// Decrypt the encrypted connection string
 	connStr, err := decrypt.DecryptAESGCM(cfg.Storage.ConnectionStringEncrypted, cfg.Storage.Passphrase)
 	if err != nil {
-		return err
+		return wrapErr("decrypting connection string", err)
 	}
 
 	client, err := storage.NewClient(connStr)
 	if err != nil {
-		log.Fatalf("failed to create client: %v", err)
+		return wrapErr("creating Azure Blob client", err)
 	}
 	log.Println("Azure Blob client created successfully")
 
 	requests, err := request.ReadRequests("request.txt")
 	if err != nil {
-		log.Fatalf("Failed to read requests: %v", err)
+		return wrapErr("reading requests", err)
 	}
 	for _, req := range requests {
 		blobs, err := storage.ListBlobsWithPrefix(client, cfg.Storage.BlobName, req.Prefix)
 		if err != nil {
-			log.Printf("Failed to list blobs for prefix %s: %v", req.Prefix, err)
+			log.Printf("ERROR: Failed to list blobs for prefix %s: %v", req.Prefix, err)
 			continue
 		}
 		// To print the path steps:
 		baseNames, err := storage.BuildShortestUpgradePath(blobs, req)
 		if err != nil {
-			log.Printf("%v", err)
+			log.Printf("ERROR: Failed to build path for %s: %v", req.Raw, err)
 			continue
 		}
 		if len(baseNames) == 1 {
@@ -65,8 +66,14 @@ func run(cfg *config.Config) error {
 		}
 		err = storage.DownloadBlobsByStep(client, cfg.Storage.BlobName, blobs, baseNames, cfg.Paths.DownloadPath)
 		if err != nil {
-			log.Fatalf("Download failed: %v", err)
+			log.Printf("ERROR: Download failed for %s: %v", req.Raw, err)
+			continue
 		}
+		log.Printf("Downloaded %s", req.Raw)
 	}
 	return nil
+}
+
+func wrapErr(context string, err error) error {
+    return fmt.Errorf("%s: %w", context, err)
 }
