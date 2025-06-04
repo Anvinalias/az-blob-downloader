@@ -1,35 +1,43 @@
 package main
 
 import (
-	"log"
-	"strings"
 	"fmt"
+	"log"
+	"os"
+	"path/filepath"
+	"strings"
 
 	"github.com/Anvinalias/az-blob-downloader/internal/config"
 	"github.com/Anvinalias/az-blob-downloader/internal/decrypt"
+	"github.com/Anvinalias/az-blob-downloader/internal/logging"
 	"github.com/Anvinalias/az-blob-downloader/internal/request"
 	"github.com/Anvinalias/az-blob-downloader/internal/storage"
-	"github.com/Anvinalias/az-blob-downloader/internal/logging"
-
 )
 
 func main() {
-    cfg, err := config.LoadConfig("config.yaml")
-    if err != nil {
-        log.Fatalf("ERROR: Failed to load config: %v", err)
-    }
-    logFile, err := logging.Setup(cfg.Paths.LogPath)
-    if err != nil {
-        log.Fatalf("ERROR: Failed to set up logging: %v", err)
-    }
-    defer logFile.Close()
+	exePath, err := os.Executable()
+	if err != nil {
+		log.Fatalf("ERROR: could not determine executable path: %v", err)
+	}
+	exeDir := filepath.Dir(exePath)
+	configPath := filepath.Join(exeDir, "config.yaml")
 
-	if err := run(cfg); err != nil {
+	cfg, err := config.LoadConfig(configPath)
+	if err != nil {
+		log.Fatalf("ERROR: Failed to load config: %v", err)
+	}
+	logFile, err := logging.Setup(cfg.Paths.LogPath)
+	if err != nil {
+		log.Fatalf("ERROR: Failed to set up logging: %v", err)
+	}
+	defer logFile.Close()
+
+	if err := run(cfg, exeDir); err != nil {
 		log.Fatalf("ERROR: %v", err)
 	}
 }
 
-func run(cfg *config.Config) error {
+func run(cfg *config.Config, exeDir string) error {
 
 	// Decrypt the encrypted connection string
 	connStr, err := decrypt.DecryptAESGCM(cfg.Storage.ConnectionStringEncrypted, cfg.Storage.Passphrase)
@@ -43,7 +51,8 @@ func run(cfg *config.Config) error {
 	}
 	log.Println("Azure Blob client created successfully")
 
-	requests, err := request.ReadRequests("request.txt")
+	requestPath := filepath.Join(exeDir, "request.txt")
+	requests, err := request.ReadRequests(requestPath)
 	if err != nil {
 		return wrapErr("reading requests", err)
 	}
@@ -75,5 +84,5 @@ func run(cfg *config.Config) error {
 }
 
 func wrapErr(context string, err error) error {
-    return fmt.Errorf("%s: %w", context, err)
+	return fmt.Errorf("%s: %w", context, err)
 }
