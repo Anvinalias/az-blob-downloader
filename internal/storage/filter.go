@@ -3,9 +3,9 @@ package storage
 import (
 	"fmt"
 	"path/filepath"
-	"strings"
 	"sort"
 	"strconv"
+	"strings"
 
 	"github.com/Anvinalias/az-blob-downloader/internal/request"
 )
@@ -45,6 +45,7 @@ func newGraph(blobs []string, prefix string) *graph {
 	}
 	return g
 }
+
 // shortestPath finds the shortest upgrade path from 'from' to 'to'.
 func (g *graph) shortestPath(from, to string) ([]edge, bool) {
 	prev := make(map[string]edge)
@@ -84,6 +85,7 @@ func (g *graph) shortestPath(from, to string) ([]edge, bool) {
 	}
 	return path, true
 }
+
 // compareVersions compares two version strings seperated with dot (.)
 // Returns -1 if v1 < v2, 1 if v1 > v2, 0 if equal.
 func compareVersions(v1, v2 string) int {
@@ -92,21 +94,22 @@ func compareVersions(v1, v2 string) int {
 	maxLen := max(len(parts2), len(parts1))
 
 	for i := 0; i < maxLen; i++ {
-    var p1, p2 int
-    if i < len(parts1) {
-        p1, _ = strconv.Atoi(parts1[i])
-    }
-    if i < len(parts2) {
-        p2, _ = strconv.Atoi(parts2[i])
-    }
-    if p1 < p2 {
-        return -1
-    } else if p1 > p2 {
-        return 1
-    }
-}
+		var p1, p2 int
+		if i < len(parts1) {
+			p1, _ = strconv.Atoi(parts1[i])
+		}
+		if i < len(parts2) {
+			p2, _ = strconv.Atoi(parts2[i])
+		}
+		if p1 < p2 {
+			return -1
+		} else if p1 > p2 {
+			return 1
+		}
+	}
 	return 0
 }
+
 // BuildShortestUpgradePath returns the minimal sequence of upgrade steps as base names (without extensions)
 func BuildShortestUpgradePath(blobs []string, req *request.Request) ([]string, error) {
 	if req.From == req.To {

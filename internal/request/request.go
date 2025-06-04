@@ -9,27 +9,27 @@ import (
 
 // Request represents a single request from request.txt
 type Request struct {
-	Prefix string 
-	From   string 
-	To     string 
+	Prefix string
+	From   string
+	To     string
 	Raw    string // the original line
 }
 
 // ParseRequestLine parses a single line into an Request
 func ParseRequestLine(line string) (*Request, error) {
-    parts := strings.Split(line, "-")
-    if len(parts) < 3 {
-        return nil, fmt.Errorf("invalid format")
-    }
-    prefix := strings.Join(parts[:len(parts)-2], "-")
-    from := parts[len(parts)-2]
-    to := parts[len(parts)-1]
-    return &Request{
-        Prefix: prefix,
-        From:   from,
-        To:     to,
-        Raw:    line,
-    }, nil
+	parts := strings.Split(line, "-")
+	if len(parts) < 3 {
+		return nil, fmt.Errorf("invalid format")
+	}
+	prefix := strings.Join(parts[:len(parts)-2], "-")
+	from := parts[len(parts)-2]
+	to := parts[len(parts)-1]
+	return &Request{
+		Prefix: prefix,
+		From:   from,
+		To:     to,
+		Raw:    line,
+	}, nil
 }
 
 // ReadRequests reads all valid requests from the given file

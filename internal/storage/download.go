@@ -13,7 +13,7 @@ import (
 )
 
 // DownloadBlobsByStep downloads all blobs whose names start with any baseName.
-// Each upgrade step may have multiple related blobs with different extensions (e.g., .zip, .z01, .z02) 
+// Each upgrade step may have multiple related blobs with different extensions (e.g., .zip, .z01, .z02)
 // or suffixes (e.g., -release.txt).
 func DownloadBlobsByStep(client *azblob.Client, containerName string, allBlobs []string, baseNames []string, downloadPath string) error {
 	for i, base := range baseNames {

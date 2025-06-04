@@ -31,7 +31,7 @@ func DecryptAESGCM(encodedCiphertext, passphrase string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	
+
 	nonceSize := aesgcm.NonceSize()
 	if len(ciphertext) < nonceSize {
 		return "", errors.New("ciphertext too short")
