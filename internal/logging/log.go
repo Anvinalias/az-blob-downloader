@@ -17,6 +17,6 @@ func Setup(logDir string) (*os.File, error) {
 
     multiWriter := io.MultiWriter(os.Stdout, logFile)
     log.SetOutput(multiWriter)
-    log.SetFlags(log.LstdFlags | log.Lshortfile)
+    log.SetFlags(log.LstdFlags)
     return logFile, nil
 }
