@@ -20,7 +20,7 @@ func main() {
 		log.Fatalf("ERROR: could not determine executable path: %v", err)
 	}
 	exeDir := filepath.Dir(exePath)
-	configPath := filepath.Join(exeDir, "config.yaml")
+	configPath := findFile("config.yaml", exeDir)
 
 	cfg, err := config.LoadConfig(configPath)
 	if err != nil {
@@ -51,7 +51,7 @@ func run(cfg *config.Config, exeDir string) error {
 	}
 	log.Println("Azure Blob client created successfully")
 
-	requestPath := filepath.Join(exeDir, "request.txt")
+	requestPath := findFile("request.txt", exeDir)
 	requests, err := request.ReadRequests(requestPath)
 	if err != nil {
 		return wrapErr("reading requests", err)
@@ -85,4 +85,17 @@ func run(cfg *config.Config, exeDir string) error {
 
 func wrapErr(context string, err error) error {
 	return fmt.Errorf("%s: %w", context, err)
+}
+
+func findFile(filename string, exeDir string) string {
+	cwd, _ := os.Getwd()
+	cwdPath := filepath.Join(cwd, filename)
+	if _, err := os.Stat(cwdPath); err == nil {
+		return cwdPath
+	}
+	exePath := filepath.Join(exeDir, filename)
+	if _, err := os.Stat(exePath); err == nil {
+		return exePath
+	}
+	return cwdPath // Will error later if not found
 }
