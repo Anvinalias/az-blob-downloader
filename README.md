@@ -16,11 +16,11 @@ A Go tool to download files from Azure Blob Storage containers for specific inte
 10. Download blobs based on the shortest path into a single directory
 11. Download blobs into separate directories based on steps
 12. Create `uploadversion.txt` based on the downloaded files
-
-### **--Pending--**
 13. Validate `request.txt` for structure, spelling, etc.
 14. Create `instructions.txt` on how to setup and run project
 15. Create a log file
+
+### **--Pending--**
 16. Refactor the entire codebase for error handling, comments, logging, best practices, etc.
 17. Update Readme.md
 
