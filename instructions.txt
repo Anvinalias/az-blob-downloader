@@ -10,6 +10,12 @@ How to Set Up
     - Update these keys only:
         blobName: Set this to the name of the container you want the offline file from
         downloadPath: Set this to the folder where you want the offline file downloaded
+	  Note:
+	  Use double backslashes (\\) in your path, or a single forward slash (/).
+	  Examples:
+	  downloadPath: "D:\\OfflineFiles\\Downloads"
+	  or
+	  downloadPath: "D:/OfflineFiles/Downloads"
     - Save the file
 
   b. Prepare the Request File
