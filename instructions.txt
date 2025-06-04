@@ -1,0 +1,35 @@
+OFFLINE FILES SETUP GUIDE
+
+How to Set Up
+
+1. Configure the Application
+
+  a. Prepare the Config File
+    - Rename config.example.yaml to config.yaml
+    - Open config.yaml in a text editor
+    - Update these keys only:
+        blobName: Set this to the name of the container you want the offline file from
+        downloadPath: Set this to the folder where you want the offline file downloaded
+    - Save the file
+
+  b. Prepare the Request File
+    - Rename request.example.txt to request.txt
+    - Open request.txt in a text editor
+    - Add your offline file request in the following format (one per line):
+
+      applicationName-startversion-endversion
+
+      Example:
+      exampleapplication-1.0.0.0-4.0.0.10
+    - Save the file
+
+How to Run
+
+- Run offline-files.exe from the command prompt, or simply double-click the application
+
+After Running
+
+- Wait for the task to complete
+- Check the log file for status updates or any errors
+
+That's it! Your offline file will be downloaded as configured.
