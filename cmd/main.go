@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"log"
 	"os"
@@ -45,6 +46,19 @@ func run(cfg *config.Config, exeDir string) error {
 		return wrapErr("decrypting connection string", err)
 	}
 
+	// read container name from prompt
+	reader := bufio.NewReader(os.Stdin)
+	var containerName string
+	for {
+		fmt.Print("Enter Azure Blob container name: ")
+		containerName, _ = reader.ReadString('\n')
+		containerName = strings.TrimSpace(containerName)
+		if containerName != "" {
+			break
+		}
+		fmt.Println("Container name cannot be empty. Please try again.")
+	}
+
 	client, err := storage.NewClient(connStr)
 	if err != nil {
 		return wrapErr("creating Azure Blob client", err)
@@ -57,7 +71,7 @@ func run(cfg *config.Config, exeDir string) error {
 		return wrapErr("reading requests", err)
 	}
 	for _, req := range requests {
-		blobs, err := storage.ListBlobsWithPrefix(client, cfg.Storage.BlobName, req.Prefix)
+		blobs, err := storage.ListBlobsWithPrefix(client, containerName, req.Prefix)
 		if err != nil {
 			log.Printf("ERROR: Failed to list blobs for prefix %s: %v", req.Prefix, err)
 			continue
@@ -79,7 +93,7 @@ func run(cfg *config.Config, exeDir string) error {
 		} else {
 			log.Printf("Shortest path for %s: [%s]", req.Raw, strings.Join(baseNames, " -> "))
 		}
-		err = storage.DownloadBlobsByStep(client, cfg.Storage.BlobName, blobs, baseNames, cfg.Paths.DownloadPath)
+		err = storage.DownloadBlobsByStep(client, containerName, blobs, baseNames, cfg.Paths.DownloadPath)
 		if err != nil {
 			log.Printf("ERROR: Download failed for %s: %v", req.Raw, err)
 			continue

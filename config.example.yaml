@@ -2,7 +2,6 @@
 storage:
   connectionStringEncrypted: ""  # Encrypted Azure Storage connection string (base64)
   passphrase: ""                 # Passphrase to decrypt the connection string (or use environment variable)
-  blobName: ""                   # Name of the Azure Blob container to access
 
 # Local paths
 paths:

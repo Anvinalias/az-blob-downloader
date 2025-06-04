@@ -17,7 +17,6 @@ type Config struct {
 type StorageConfig struct {
 	ConnectionStringEncrypted string `yaml:"connectionStringEncrypted"`
 	Passphrase                string `yaml:"passphrase"`
-	BlobName                  string `yaml:"blobName"`
 }
 
 type PathConfig struct {
@@ -44,10 +43,6 @@ func LoadConfig(filePath string) (*Config, error) {
 	if cfg.Storage.Passphrase == "" {
 		return nil, errors.New("storage.passphrase is required in config.yaml")
 	}
-	if cfg.Storage.BlobName == "" {
-		return nil, errors.New("storage.blobName is required in config.yaml")
-	}
-
 	// downloadPath is required
 	if cfg.Paths.DownloadPath == "" {
 		return nil, errors.New("downloadPath is required in config.yaml")
