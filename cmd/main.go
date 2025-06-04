@@ -62,10 +62,16 @@ func run(cfg *config.Config, exeDir string) error {
 			log.Printf("ERROR: Failed to list blobs for prefix %s: %v", req.Prefix, err)
 			continue
 		}
+
+		if len(blobs) == 0 {
+			log.Printf("No blobs found for '%s'.", req.Raw)
+			log.Printf("  - Possible reasons: application name in request.txt is incorrect, or there are no files in the container for this application.")
+			continue
+		}
 		// To print the path steps:
 		baseNames, err := storage.BuildShortestUpgradePath(blobs, req)
 		if err != nil {
-			log.Printf("ERROR: Failed to build path for %s: %v", req.Raw, err)
+			log.Printf("ERROR: Failed to build path for %s: %v\n  - Possible reasons: application name in request.txt is incorrect, there are no files in the container for this application, or there is no valid upgrade path between the requested versions.", req.Raw, err)
 			continue
 		}
 		if len(baseNames) == 1 {
